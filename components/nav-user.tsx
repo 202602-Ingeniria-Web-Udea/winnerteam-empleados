@@ -1,10 +1,9 @@
-"use client"
+'use client';
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { IconLogout, IconSelector } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,99 +12,75 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
-import { IconSelector, IconSparkles, IconRosetteDiscountCheck, IconCreditCard, IconBell, IconLogout } from "@tabler/icons-react"
+} from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { initials } from '@/lib/format';
+import type { CurrentUser } from '@/lib/session';
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
+const ROLE_LABEL = { ADMIN: 'Administrador', USER: 'Usuario' } as const;
+
+function UserSummary({ user }: { user: CurrentUser }) {
+  const fullName = [user.name, user.lastName].filter(Boolean).join(' ');
+  return (
+    <>
+      <Avatar className='size-8 rounded-lg'>
+        {user.image && <AvatarImage src={user.image} alt={fullName} />}
+        <AvatarFallback className='rounded-lg'>{initials(user.name, user.lastName)}</AvatarFallback>
+      </Avatar>
+      <div className='grid flex-1 text-left text-sm leading-tight'>
+        <span className='truncate font-medium'>{fullName}</span>
+        <span className='truncate text-xs text-muted-foreground'>{user.email}</span>
+      </div>
+    </>
+  );
+}
+
+export function NavUser({ user }: { user: CurrentUser }) {
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  async function logout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.replace('/login');
+      router.refresh();
+    } catch {
+      toast.error('No fue posible cerrar la sesión');
+    }
   }
-}) {
-  const { isMobile } = useSidebar()
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
-            }
+            render={<SidebarMenuButton size='lg' className='aria-expanded:bg-muted' />}
           >
-            <Avatar>
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-            </div>
-            <IconSelector className="ml-auto size-4" />
+            <UserSummary user={user} />
+            <IconSelector className='ml-auto size-4' />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-fit"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
+            className='min-w-56'
+            side={isMobile ? 'bottom' : 'right'}
+            align='end'
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar>
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
-                  </div>
+              <DropdownMenuLabel className='p-0 font-normal'>
+                <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                  <UserSummary user={user} />
                 </div>
+                <p className='px-1 pb-1 text-xs text-muted-foreground'>Rol: {ROLE_LABEL[user.role]}</p>
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconSparkles
-                />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconRosetteDiscountCheck
-                />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard
-                />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconBell
-                />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconLogout
-              />
-              Log out
+            <DropdownMenuItem onClick={logout}>
+              <IconLogout />
+              Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
