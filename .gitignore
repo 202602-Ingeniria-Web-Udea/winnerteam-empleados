@@ -46,3 +46,6 @@ next-env.d.ts
 # superpowers
 /.superpowers/
 /.vscode/
+
+# enunciado del proyecto (no se versiona)
+/Proyecto 2.pdf
