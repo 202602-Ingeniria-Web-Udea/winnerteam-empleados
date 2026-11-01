@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -48,7 +49,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
   return (
     <div className={cn('flex w-full max-w-sm flex-col gap-8', className)} {...props}>
-      <Logo className='lg:hidden' />
+      <Link href='/' className='w-fit lg:hidden'>
+        <Logo />
+      </Link>
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <FieldGroup>
           <div className='space-y-2'>
