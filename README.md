@@ -166,12 +166,13 @@ tests/                     Pruebas unitarias (Vitest)
   API pública de Supabase no puede leerlas (por ejemplo, los hashes de contraseña). La aplicación
   no se ve afectada porque Prisma se conecta como dueño de las tablas.
 
-### Video opcional de la sección "El problema"
+### Video de la sección "El problema"
 
-Para mostrar un clip (por ejemplo, generado con IA) junto a la animación, guárdalo en
-`public/videos/problema.mp4` y cambia `PROBLEM_VIDEO_SRC` en
-`components/landing/problem-section.tsx` a `'/videos/problema.mp4'`. Si es `null`, solo se ve la
-animación.
+`public/videos/problema-balance.mp4` es un clip generado con IA (Veo 3.1 en Google Flow) y editado
+con ffmpeg: la IA había inventado una pantalla de la app con errores de ortografía, así que ese
+tramo se reemplazó por una captura real de Balance. Se publica en 720p y sin audio (1,7 MB), con un
+pie que aclara que es ilustrativo. Se configura en `PROBLEM_VIDEO_SRC`
+(`components/landing/problem-section.tsx`); con `null` solo se muestra la animación.
 
 ## Ejecución local
 

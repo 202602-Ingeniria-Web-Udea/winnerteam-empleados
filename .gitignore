@@ -52,3 +52,6 @@ next-env.d.ts
 
 # archivos temporales de la CLI de Supabase
 /supabase/.temp/
+
+# video original sin editar (la landing usa public/videos/problema-balance.mp4)
+/public/videos/problema.mp4

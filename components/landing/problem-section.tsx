@@ -1,11 +1,13 @@
 import { ProblemAnimation } from '@/components/landing/problem-animation';
 
 /**
- * Clip de video opcional (p. ej. generado con IA) que acompaña la animación.
- * Para activarlo: guardar el archivo en public/videos/ y poner aquí su ruta,
- * por ejemplo '/videos/problema.mp4'. Con null solo se muestra la animación.
+ * Clip de video opcional que acompaña la animación. Con null solo se muestra
+ * la animación. El actual se generó con IA (Veo 3.1) y se editó para que la
+ * pantalla de la app sea una captura real (la IA había inventado texto con
+ * errores de ortografía).
  */
-export const PROBLEM_VIDEO_SRC: string | null = null;
+export const PROBLEM_VIDEO_SRC: string | null = '/videos/problema-balance.mp4';
+const PROBLEM_VIDEO_POSTER = '/videos/problema-poster.jpg';
 
 export function ProblemSection() {
   return (
@@ -24,15 +26,22 @@ export function ProblemSection() {
         </div>
         {PROBLEM_VIDEO_SRC ? (
           <div className='grid gap-4'>
-            <video
-              src={PROBLEM_VIDEO_SRC}
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-label='Video: una oficina de recursos humanos al cierre de mes'
-              className='aspect-video w-full rounded-[2rem] object-cover shadow-2xl sepia-[.2] saturate-[.9]'
-            />
+            <figure className='space-y-2'>
+              <video
+                src={PROBLEM_VIDEO_SRC}
+                poster={PROBLEM_VIDEO_POSTER}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload='metadata'
+                aria-label='Video: un empleado pregunta por sus horas a favor; la jefa de Recursos Humanos se agobia entre papeles y calculadora, consulta Balance y le responde con una sonrisa.'
+                className='aspect-video w-full rounded-[2rem] bg-forest-deep object-cover shadow-2xl'
+              />
+              <figcaption className='text-center text-xs text-muted-foreground'>
+                Video ilustrativo generado con IA. La pantalla de Balance que aparece es una captura real.
+              </figcaption>
+            </figure>
             <ProblemAnimation />
           </div>
         ) : (
