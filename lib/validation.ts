@@ -2,10 +2,13 @@
 // con las mismas reglas, así un dato inválido nunca llega a la base de datos.
 import * as z from 'zod';
 
+// Mensaje cuando el cuerpo de la solicitud no es un objeto JSON.
+const INVALID_BODY = { error: 'Datos inválidos' };
+
 export const loginSchema = z.object({
   email: z.email('Ingresa un correo electrónico válido'),
   password: z.string().min(1, 'Ingresa tu contraseña'),
-});
+}, INVALID_BODY);
 
 export const employeeSchema = z.object({
   name: z
@@ -19,7 +22,7 @@ export const employeeSchema = z.object({
     .int('El saldo inicial debe ser un número entero de horas')
     .min(0, 'El saldo inicial no puede ser negativo')
     .max(10000, 'El saldo inicial no puede superar 10000 horas'),
-});
+}, INVALID_BODY);
 
 export const movementSchema = z.object({
   employeeId: z.string().min(1, 'Selecciona un empleado'),
@@ -29,11 +32,11 @@ export const movementSchema = z.object({
     .int('La cantidad debe ser un número entero de horas')
     .min(1, 'La cantidad debe ser un número entero mayor que cero')
     .max(1000, 'La cantidad no puede superar 1000 horas'),
-});
+}, INVALID_BODY);
 
 export const roleSchema = z.object({
   role: z.enum(['ADMIN', 'USER'], 'Selecciona un rol válido'),
-});
+}, INVALID_BODY);
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type EmployeeInput = z.infer<typeof employeeSchema>;

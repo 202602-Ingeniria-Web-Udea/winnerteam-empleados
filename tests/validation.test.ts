@@ -61,3 +61,16 @@ describe('roleSchema', () => {
     expect(roleSchema.safeParse({ role: 'SUPERADMIN' }).success).toBe(false);
   });
 });
+
+describe('cuerpo que no es un objeto', () => {
+  it.each([
+    ['loginSchema', loginSchema],
+    ['employeeSchema', employeeSchema],
+    ['movementSchema', movementSchema],
+    ['roleSchema', roleSchema],
+  ])('%s responde en español', (_name, schema) => {
+    const result = schema.safeParse(null);
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].message).toBe('Datos inválidos');
+  });
+});
