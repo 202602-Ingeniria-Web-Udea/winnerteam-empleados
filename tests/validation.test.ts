@@ -74,3 +74,16 @@ describe('cuerpo que no es un objeto', () => {
     expect(result.error?.issues[0].message).toBe('Datos inválidos');
   });
 });
+
+describe('campos faltantes', () => {
+  it.each([
+    ['movementSchema', movementSchema],
+    ['employeeSchema', employeeSchema],
+    ['loginSchema', loginSchema],
+    ['roleSchema', roleSchema],
+  ])('%s no responde en inglés cuando el cuerpo viene vacío', (_name, schema) => {
+    const result = schema.safeParse({});
+    expect(result.success).toBe(false);
+    for (const issue of result.error!.issues) expect(issue.message).not.toMatch(/Invalid|expected|received/i);
+  });
+});

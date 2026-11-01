@@ -2,6 +2,10 @@
 // con las mismas reglas, así un dato inválido nunca llega a la base de datos.
 import * as z from 'zod';
 
+// Mensajes por defecto de zod en español (p. ej. campos faltantes en una
+// solicitud hecha directamente a la API); los mensajes propios tienen prioridad.
+z.config(z.locales.es());
+
 // Mensaje cuando el cuerpo de la solicitud no es un objeto JSON.
 const INVALID_BODY = { error: 'Datos inválidos' };
 

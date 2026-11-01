@@ -103,6 +103,9 @@ tests/                     Pruebas unitarias (Vitest)
   hora de Colombia, sin importar dónde corra el servidor.
 - **Un administrador no puede quitarse su propio rol**, para que el sistema no se quede sin
   administradores por accidente.
+- **RLS activado en Supabase.** Las tablas tienen *Row Level Security* sin políticas, así la Data
+  API pública de Supabase no puede leerlas (por ejemplo, los hashes de contraseña). La aplicación
+  no se ve afectada porque Prisma se conecta como dueño de las tablas.
 
 ## Ejecución local
 
@@ -130,7 +133,7 @@ npm run dev
 
 | Variable | Uso |
 |---|---|
-| `DATABASE_URL` | Conexión de la aplicación. En Supabase: *Transaction pooler* (puerto 6543). |
+| `DATABASE_URL` | Conexión de la aplicación. En Supabase: *Transaction pooler* (puerto 6543) terminada en `?sslmode=require&uselibpqcompat=true`. |
 | `DIRECT_URL` | Conexión para migraciones. En Supabase: *Session pooler* o conexión directa (puerto 5432). |
 | `SESSION_SECRET` | Clave para firmar las sesiones. Generar con `openssl rand -base64 32`. |
 
@@ -155,3 +158,7 @@ npm run dev
 3. Importar el repositorio en Vercel con el nombre de proyecto `winnerteam-empleados` y definir
    `DATABASE_URL`, `DIRECT_URL` y `SESSION_SECRET` en *Settings → Environment Variables*.
 4. Desplegar. Vercel ejecuta `npm install` (que genera el cliente de Prisma) y `npm run build`.
+
+> **SSL:** con el driver `pg` instalado, `sslmode=require` por sí solo se interpreta como
+> `verify-full` y falla con el certificado de Supabase. Por eso `DATABASE_URL` debe incluir
+> `uselibpqcompat=true`, que conserva la conexión cifrada con el significado estándar de `require`.
