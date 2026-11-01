@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatHours, formatSignedHours, initials } from '@/lib/format';
+import { formatDate, formatHours, formatSignedHours, initials, shortId } from '@/lib/format';
 
 describe('formatHours', () => {
   it('agrega la unidad de horas', () => {
@@ -38,5 +38,12 @@ describe('initials', () => {
   it('usa las dos primeras palabras si no hay apellido', () => {
     expect(initials('Ana María Gómez')).toBe('AM');
     expect(initials('andrés', null)).toBe('A');
+  });
+});
+
+describe('shortId', () => {
+  it('muestra los últimos 8 caracteres, que son los que varían entre cuids', () => {
+    expect(shortId('cmvy44ou0001abcdefgh')).toBe('abcdefgh');
+    expect(shortId('abc')).toBe('abc');
   });
 });

@@ -37,3 +37,11 @@ export function initials(name: string, lastName?: string | null): string {
   const picked = lastName ? [words[0], words[words.length - 1]] : words.slice(0, 2);
   return picked.map((word) => word[0].toUpperCase()).join('');
 }
+
+/**
+ * Versión corta de un id para las tablas. Los cuid empiezan con una marca de
+ * tiempo, así que el inicio se repite entre registros cercanos; el final no.
+ */
+export function shortId(id: string): string {
+  return id.slice(-8);
+}
