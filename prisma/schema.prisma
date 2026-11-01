@@ -22,6 +22,18 @@ enum Enum_MovementType {
   SALIDA
 }
 
+// Motivo que justifica cada movimiento (etiquetas en lib/reasons.ts).
+enum Enum_MovementReason {
+  HORAS_EXTRA
+  TURNO_SABADO
+  FESTIVO_TRABAJADO
+  PERMISO
+  CITA_MEDICA
+  DIA_COMPENSATORIO
+  SALDO_INICIAL
+  OTRO
+}
+
 model User {
   id               String         @id @default(cuid())
   name             String
@@ -67,14 +79,18 @@ model Employee {
 }
 
 model HourMovement {
-  id          String            @id @default(cuid())
+  id          String              @id @default(cuid())
   type        Enum_MovementType
   // Horas enteras, siempre positivas; el signo lo da `type`.
   quantity    Int
-  createdAt   DateTime          @default(now())
-  employee    Employee          @relation(fields: [employeeId], references: [id])
+  // Justificación obligatoria del movimiento (la API valida que el motivo
+  // corresponda al tipo). Los valores por defecto solo cubren filas antiguas.
+  reason      Enum_MovementReason @default(OTRO)
+  description String              @default("")
+  createdAt   DateTime            @default(now())
+  employee    Employee            @relation(fields: [employeeId], references: [id])
   employeeId  String
-  createdBy   User              @relation(fields: [createdById], references: [id])
+  createdBy   User                @relation(fields: [createdById], references: [id])
   createdById String
 
   @@index([employeeId, createdAt])

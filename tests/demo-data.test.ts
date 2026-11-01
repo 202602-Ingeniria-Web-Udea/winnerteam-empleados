@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { generateDemoData, HOLIDAYS_2026 } from '@/prisma/demo-data';
 import { BUSINESS_TIME_ZONE } from '@/lib/balance';
+import { isReasonValidFor } from '@/lib/reasons';
 
 const NOW = new Date('2026-11-01T17:00:00Z'); // domingo 1 de noviembre, 12:00 en Bogotá
 const data = generateDemoData(NOW);
@@ -97,5 +98,28 @@ describe('generateDemoData', () => {
   it('incluye empleados que ingresaron durante el periodo', () => {
     const adoption = Math.min(...data.employees.map((e) => e.createdAt.getTime()));
     expect(data.employees.filter((e) => e.createdAt.getTime() > adoption + 7 * 86_400_000).length).toBeGreaterThanOrEqual(8);
+  });
+
+  it('cada movimiento tiene un motivo coherente con su tipo y una descripción', () => {
+    for (const employee of data.employees) {
+      employee.movements.forEach((m, index) => {
+        const isInitial = index === 0 && m.createdAt.getTime() === employee.createdAt.getTime();
+        if (isInitial) expect(m.reason).toBe('SALDO_INICIAL');
+        else expect(isReasonValidFor(m.type, m.reason), `${m.type} ${m.reason}`).toBe(true);
+        expect(m.description.length).toBeGreaterThanOrEqual(3);
+        expect(m.description.length).toBeLessThanOrEqual(200);
+      });
+    }
+  });
+
+  it('usa todos los motivos del banco de horas y los compensatorios son de 8 h', () => {
+    const all = data.employees.flatMap((e) => e.movements);
+    const reasons = new Set(all.map((m) => m.reason));
+    for (const reason of ['SALDO_INICIAL', 'HORAS_EXTRA', 'TURNO_SABADO', 'FESTIVO_TRABAJADO', 'PERMISO', 'CITA_MEDICA', 'DIA_COMPENSATORIO']) {
+      expect(reasons.has(reason as never), reason).toBe(true);
+    }
+    expect(all.filter((m) => m.reason === 'DIA_COMPENSATORIO').every((m) => m.quantity === 8)).toBe(true);
+    // Las descripciones varían: no es el mismo texto repetido.
+    expect(new Set(all.map((m) => m.description)).size).toBeGreaterThan(40);
   });
 });

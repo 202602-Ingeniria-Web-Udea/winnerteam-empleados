@@ -89,9 +89,13 @@ salida. En este sistema:
 - **Inicio (dashboard):** total de empleados, horas acumuladas, movimientos de hoy, los 5 empleados
   con saldo más bajo (menos de 8 h, con enlace a la lista completa) y últimos movimientos.
 - **Transacciones:** selector de empleado **con búsqueda**, tabla de movimientos paginada (id,
-  fecha, tipo, horas y responsable), diálogo para agregar un movimiento y gráfica de la evolución
-  del saldo diario con rango de 30 días, 90 días o todo. Una salida mayor que el saldo disponible se
-  rechaza.
+  fecha, tipo, horas, motivo y responsable), diálogo para agregar un movimiento y gráfica de la
+  evolución del saldo diario con rango de 30 días, 90 días o todo. Una salida mayor que el saldo
+  disponible se rechaza.
+- **Justificación obligatoria de cada movimiento:** un **motivo** que depende del tipo (Entrada:
+  horas extra, turno de sábado, festivo trabajado u otro; Salida: permiso, cita médica, día
+  compensatorio u otro) y una **descripción** de 3 a 200 caracteres. El saldo inicial de un empleado
+  se registra solo, con el motivo "Saldo inicial". La API rechaza motivos que no correspondan al tipo.
 - **Maestros:** tabla de empleados (id, nombre, saldo y quién lo creó) con **buscador**, orden por
   nombre o saldo, filtro "Solo saldo bajo", paginación de 20 en 20 y enlace a los movimientos de
   cada empleado; diálogo para agregar un empleado con su saldo inicial.

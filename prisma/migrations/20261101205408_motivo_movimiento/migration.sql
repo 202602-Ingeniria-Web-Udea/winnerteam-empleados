@@ -1,0 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Enum_MovementReason" AS ENUM ('HORAS_EXTRA', 'TURNO_SABADO', 'FESTIVO_TRABAJADO', 'PERMISO', 'CITA_MEDICA', 'DIA_COMPENSATORIO', 'SALDO_INICIAL', 'OTRO');
+
+-- AlterTable
+ALTER TABLE "HourMovement" ADD COLUMN     "description" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "reason" "Enum_MovementReason" NOT NULL DEFAULT 'OTRO';

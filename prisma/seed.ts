@@ -55,6 +55,8 @@ async function main() {
       data: employee.movements.map((movement) => ({
         type: movement.type,
         quantity: movement.quantity,
+        reason: movement.reason,
+        description: movement.description,
         createdAt: movement.createdAt,
         employeeId: created.id,
         createdById: userIds.get(movement.createdByEmail)!,

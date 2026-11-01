@@ -22,7 +22,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!parsed.success) {
     return NextResponse.json({ error: firstIssue(parsed.error) }, { status: 400 });
   }
-  const { employeeId, type, quantity } = parsed.data;
+  const { employeeId, type, quantity, reason, description } = parsed.data;
 
   try {
     const result = await prisma.$transaction(async (tx) => {
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
 
       const movement = await tx.hourMovement.create({
-        data: { type, quantity, employeeId, createdById: user.id },
+        data: { type, quantity, reason, description, employeeId, createdById: user.id },
       });
       const { balance } = await tx.employee.findUniqueOrThrow({
         where: { id: employeeId },

@@ -1,23 +1,53 @@
 import { describe, expect, it } from 'vitest';
 import { employeeSchema, loginSchema, movementSchema, roleSchema } from '@/lib/validation';
 
+// Movimiento válido de referencia; cada prueba cambia un solo campo.
+const valid = { employeeId: 'x', type: 'SALIDA', quantity: '4', reason: 'CITA_MEDICA', description: 'Control en la EPS' };
+
 describe('movementSchema', () => {
   it.each([0, -3, 1.5, 'abc', 1001])('rechaza la cantidad %s', (quantity) => {
-    expect(movementSchema.safeParse({ employeeId: 'x', type: 'ENTRADA', quantity }).success).toBe(false);
+    expect(movementSchema.safeParse({ ...valid, quantity }).success).toBe(false);
   });
 
   it('rechaza un tipo de movimiento desconocido', () => {
-    expect(movementSchema.safeParse({ employeeId: 'x', type: 'OTRO', quantity: 2 }).success).toBe(false);
+    expect(movementSchema.safeParse({ ...valid, type: 'OTRO' }).success).toBe(false);
   });
 
   it('rechaza un movimiento sin empleado', () => {
-    expect(movementSchema.safeParse({ employeeId: '', type: 'ENTRADA', quantity: 2 }).success).toBe(false);
+    expect(movementSchema.safeParse({ ...valid, employeeId: '' }).success).toBe(false);
   });
 
   it('acepta una cantidad en texto y la convierte a número', () => {
-    const result = movementSchema.safeParse({ employeeId: 'x', type: 'SALIDA', quantity: '4' });
+    const result = movementSchema.safeParse(valid);
     expect(result.success).toBe(true);
-    expect(result.data).toEqual({ employeeId: 'x', type: 'SALIDA', quantity: 4 });
+    expect(result.data).toEqual({ ...valid, quantity: 4 });
+  });
+
+  it('exige un motivo', () => {
+    const result = movementSchema.safeParse({ ...valid, reason: undefined });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].message).toBe('Selecciona el motivo del movimiento');
+  });
+
+  it('rechaza un motivo que no corresponde al tipo', () => {
+    const result = movementSchema.safeParse({ ...valid, type: 'ENTRADA', reason: 'CITA_MEDICA' });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].message).toBe('El motivo no corresponde al tipo de movimiento');
+  });
+
+  it('no permite elegir "Saldo inicial" desde el formulario', () => {
+    expect(movementSchema.safeParse({ ...valid, type: 'ENTRADA', reason: 'SALDO_INICIAL' }).success).toBe(false);
+  });
+
+  it.each(['', '  ', 'ab'])('exige una descripción de al menos 3 caracteres (%j)', (description) => {
+    const result = movementSchema.safeParse({ ...valid, description });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].message).toBe('Describe el movimiento (mínimo 3 caracteres)');
+  });
+
+  it('limita la descripción a 200 caracteres y recorta espacios', () => {
+    expect(movementSchema.safeParse({ ...valid, description: 'x'.repeat(201) }).success).toBe(false);
+    expect(movementSchema.safeParse({ ...valid, description: '  Control en la EPS  ' }).data?.description).toBe('Control en la EPS');
   });
 });
 

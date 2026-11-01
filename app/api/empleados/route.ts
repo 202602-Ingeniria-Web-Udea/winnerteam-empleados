@@ -24,7 +24,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
       if (initialBalance > 0) {
         await tx.hourMovement.create({
-          data: { type: 'ENTRADA', quantity: initialBalance, employeeId: created.id, createdById: user.id },
+          data: {
+            type: 'ENTRADA',
+            quantity: initialBalance,
+            reason: 'SALDO_INICIAL',
+            description: 'Saldo inicial al registrar al empleado',
+            employeeId: created.id,
+            createdById: user.id,
+          },
         });
       }
       return created;

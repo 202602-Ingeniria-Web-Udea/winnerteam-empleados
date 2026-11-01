@@ -4,11 +4,13 @@ import { EmptyState } from '@/components/empty-state';
 import { MovementBadge } from '@/components/movements/movement-badge';
 import type { MovementType } from '@/lib/balance';
 import { formatDate, formatSignedHours } from '@/lib/format';
+import { reasonLabel, type MovementReason } from '@/lib/reasons';
 
 export type RecentMovement = {
   id: string;
   type: MovementType;
   quantity: number;
+  reason: MovementReason;
   createdAt: Date;
   employee: { id: string; name: string };
   createdBy: { name: string; lastName: string | null };
@@ -31,7 +33,7 @@ export function RecentMovements({ movements }: { movements: RecentMovement[] }) 
               {movement.employee.name}
             </Link>
             <p className='truncate text-xs text-muted-foreground'>
-              {formatDate(movement.createdAt)} · por{' '}
+              {reasonLabel(movement.reason)} · {formatDate(movement.createdAt)} · por{' '}
               {[movement.createdBy.name, movement.createdBy.lastName].filter(Boolean).join(' ')}
             </p>
           </div>

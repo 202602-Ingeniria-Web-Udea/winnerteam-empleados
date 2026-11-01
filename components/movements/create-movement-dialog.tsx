@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
 
@@ -18,12 +18,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { Textarea } from '@/components/ui/textarea';
 import { sendJson } from '@/lib/api-client';
 import { formatHours } from '@/lib/format';
+import { reasonsFor } from '@/lib/reasons';
 import { movementSchema, type MovementInput } from '@/lib/validation';
 
 type MovementForm = z.input<typeof movementSchema>;
@@ -43,8 +45,11 @@ export function CreateMovementDialog({
   const [loading, setLoading] = useState(false);
   const form = useForm<MovementForm, unknown, MovementInput>({
     resolver: zodResolver(movementSchema),
-    values: { employeeId: employee.id, type: 'ENTRADA', quantity: '' },
+    values: { employeeId: employee.id, type: 'ENTRADA', quantity: '', reason: 'HORAS_EXTRA', description: '' },
   });
+  // Los motivos disponibles dependen del tipo elegido.
+  const type = useWatch({ control: form.control, name: 'type' });
+  const reasonItems = reasonsFor(type).map(({ value, label }) => ({ value, label }));
 
   function handleOpenChange(next: boolean) {
     if (loading) return;
@@ -91,7 +96,16 @@ export function CreateMovementDialog({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor='movement-type'>Tipo de movimiento</FieldLabel>
-                  <Select items={TYPE_ITEMS} value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    items={TYPE_ITEMS}
+                    value={field.value}
+                    onValueChange={(next) => {
+                      if (next !== 'ENTRADA' && next !== 'SALIDA') return;
+                      field.onChange(next);
+                      // Al cambiar el tipo, el motivo anterior deja de ser válido.
+                      form.setValue('reason', reasonsFor(next)[0].value);
+                    }}
+                  >
                     <SelectTrigger id='movement-type' className='w-full' aria-invalid={fieldState.invalid}>
                       <SelectValue />
                     </SelectTrigger>
@@ -123,6 +137,51 @@ export function CreateMovementDialog({
                     step={1}
                     aria-invalid={fieldState.invalid}
                   />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name='reason'
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor='movement-reason'>Motivo</FieldLabel>
+                  <Select items={reasonItems} value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger id='movement-reason' className='w-full' aria-invalid={fieldState.invalid}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {reasonItems.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name='description'
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor='movement-description'>Descripción</FieldLabel>
+                  <Textarea
+                    {...field}
+                    id='movement-description'
+                    rows={2}
+                    maxLength={200}
+                    placeholder={type === 'ENTRADA' ? 'Ej.: Inventario de fin de mes' : 'Ej.: Control médico en la EPS'}
+                    className='min-h-16 resize-none'
+                    aria-invalid={fieldState.invalid}
+                  />
+                  <FieldDescription className='flex justify-between gap-2'>
+                    <span>Justifica el movimiento para que quede trazable.</span>
+                    <span className='tabular-nums'>{field.value.length}/200</span>
+                  </FieldDescription>
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}

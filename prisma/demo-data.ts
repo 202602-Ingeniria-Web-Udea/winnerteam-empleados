@@ -8,9 +8,13 @@
 // - SALIDA: permisos, citas médicas y días compensatorios, solo si el saldo alcanza.
 // - Recursos humanos registra en días hábiles y en horario de oficina.
 
+import type { MovementReason } from '../lib/reasons';
+
 export type DemoMovement = {
   type: 'ENTRADA' | 'SALIDA';
   quantity: number;
+  reason: MovementReason;
+  description: string;
   createdAt: Date;
   createdByEmail: string;
 };
@@ -81,6 +85,33 @@ const OVERTIME: Record<Profile, { p: number; closeP: number; min: number; max: n
   comercial: { p: 0.07, closeP: 0.45, min: 1, max: 3 },
   administrativo: { p: 0.05, closeP: 0.15, min: 1, max: 2 },
 };
+
+// Descripciones verosímiles para justificar cada motivo.
+const OVERTIME_TASKS: Record<Profile, string[]> = {
+  operaciones: [
+    'Apoyo en despacho de pedidos', 'Descargue de mercancía', 'Mantenimiento preventivo de máquinas',
+    'Cubrir turno de compañero incapacitado', 'Inventario de bodega', 'Alistamiento de pedido urgente',
+  ],
+  contabilidad: ['Conciliaciones bancarias', 'Revisión de facturas de proveedores', 'Preparación de declaración de IVA'],
+  comercial: ['Visita a cliente fuera de horario', 'Preparación de propuesta comercial', 'Atención de feria comercial'],
+  administrativo: ['Organización del archivo', 'Apoyo en proceso de selección', 'Preparación de informe para gerencia'],
+};
+const SATURDAY_TASKS = ['inventario de bodega', 'producción extra', 'despacho de temporada', 'mantenimiento de planta'];
+const PERMISSIONS = [
+  'Diligencia personal', 'Trámite bancario', 'Reunión en el colegio de los hijos', 'Trámite en notaría',
+  'Calamidad doméstica', 'Renovación de documentos',
+];
+const MEDICAL = ['Control médico en la EPS', 'Cita odontológica', 'Exámenes de laboratorio', 'Cita con especialista', 'Terapia física'];
+const COMPENSATORY = [
+  'Día compensatorio por horas acumuladas', 'Puente con el fin de semana', 'Compensatorio solicitado por el empleado',
+  'Viaje familiar', 'Descanso tras temporada alta',
+];
+const INITIAL_DESCRIPTION = 'Saldo inicial al registrar al empleado';
+
+const monthName = (day: string) =>
+  new Intl.DateTimeFormat('es-CO', { month: 'long', timeZone: 'UTC' }).format(new Date(`${day}T12:00:00Z`));
+const dayAndMonth = (day: string) =>
+  new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${day}T12:00:00Z`));
 
 const DAY = 86_400_000;
 const BOGOTA_OFFSET_HOURS = 5; // Bogotá = UTC−5, sin horario de verano
@@ -177,39 +208,65 @@ export function generateDemoData(now: Date = new Date()): { staff: DemoStaff[]; 
       const initial = profile === 'operaciones' ? int(6, 34) : int(4, 24);
       if (initial > 0) {
         balance = initial;
-        movements.push({ type: 'ENTRADA', quantity: initial, createdAt, createdByEmail: 'admin@empresa.com' });
+        movements.push({
+          type: 'ENTRADA',
+          quantity: initial,
+          reason: 'SALDO_INICIAL',
+          description: INITIAL_DESCRIPTION,
+          createdAt,
+          createdByEmail: 'admin@empresa.com',
+        });
       }
     }
     const createdByEmail = pick(activeStaff(createdAt, true)).email;
     if (movements[0]) movements[0].createdByEmail = createdByEmail;
 
     // Turnos de sábado y festivos trabajados, pendientes de registrar el siguiente día hábil.
-    const pendingByDay = new Map<string, number[]>();
+    type Pending = { quantity: number; reason: MovementReason; description: string };
+    const pendingByDay = new Map<string, Pending[]>();
     for (let day = bogotaDay(createdAt); day < today; day = addDays(day, 1)) {
       if (profile !== 'operaciones') continue;
       const worked = weekday(day) === 6 ? chance(0.26) : HOLIDAYS_2026.includes(day) ? chance(0.35) : false;
       if (worked && day > bogotaDay(createdAt)) {
         const registerOn = nextBusinessDay(day);
         if (registerOn < today) {
-          pendingByDay.set(registerOn, [...(pendingByDay.get(registerOn) ?? []), weekday(day) === 6 ? int(4, 8) : 8]);
+          const pending: Pending =
+            weekday(day) === 6
+              ? { quantity: int(4, 8), reason: 'TURNO_SABADO', description: `Turno del sábado ${dayAndMonth(day)}: ${pick(SATURDAY_TASKS)}` }
+              : { quantity: 8, reason: 'FESTIVO_TRABAJADO', description: `Festivo del ${dayAndMonth(day)}: ${pick(SATURDAY_TASKS)}` };
+          pendingByDay.set(registerOn, [...(pendingByDay.get(registerOn) ?? []), pending]);
         }
       }
     }
 
     for (const day of businessDays) {
       if (day <= bogotaDay(createdAt)) continue;
-      const events: { type: 'ENTRADA' | 'SALIDA'; quantity: number; hour: number }[] = [];
+      const events: (Pending & { type: 'ENTRADA' | 'SALIDA'; hour: number })[] = [];
 
-      for (const hours of pendingByDay.get(day) ?? []) events.push({ type: 'ENTRADA', quantity: hours, hour: int(7, 9) });
+      for (const pending of pendingByDay.get(day) ?? []) events.push({ ...pending, type: 'ENTRADA', hour: int(7, 9) });
       if (chance(monthClose.has(day) ? rules.closeP : rules.p)) {
-        events.push({ type: 'ENTRADA', quantity: int(rules.min, monthClose.has(day) ? rules.max + 1 : rules.max), hour: int(15, 17) });
+        const isClose = monthClose.has(day) && (profile === 'contabilidad' || profile === 'comercial');
+        events.push({
+          type: 'ENTRADA',
+          quantity: int(rules.min, monthClose.has(day) ? rules.max + 1 : rules.max),
+          reason: 'HORAS_EXTRA',
+          description: isClose
+            ? `${profile === 'contabilidad' ? 'Cierre contable' : 'Cierre de ventas'} de ${monthName(day)}`
+            : pick(OVERTIME_TASKS[profile]),
+          hour: int(15, 17),
+        });
       }
       // Salidas: con más saldo, más probable que tome tiempo compensatorio.
       const compensatory = balance >= 50 ? 0.14 : balance >= 30 ? 0.05 : balance >= 14 ? 0.02 : 0;
-      if (chance(compensatory)) events.push({ type: 'SALIDA', quantity: 8, hour: int(8, 11) });
+      if (chance(compensatory)) {
+        events.push({ type: 'SALIDA', quantity: 8, reason: 'DIA_COMPENSATORIO', description: pick(COMPENSATORY), hour: int(8, 11) });
+      }
       // Con pocas horas a favor, el empleado pide menos permisos.
-      else if (chance(balance < 8 ? 0.008 : 0.028)) events.push({ type: 'SALIDA', quantity: int(2, 4), hour: int(8, 16) });
-      else if (chance(0.012)) events.push({ type: 'SALIDA', quantity: int(2, 3), hour: int(7, 12) });
+      else if (chance(balance < 8 ? 0.008 : 0.028)) {
+        events.push({ type: 'SALIDA', quantity: int(2, 4), reason: 'PERMISO', description: pick(PERMISSIONS), hour: int(8, 16) });
+      } else if (chance(0.012)) {
+        events.push({ type: 'SALIDA', quantity: int(2, 3), reason: 'CITA_MEDICA', description: pick(MEDICAL), hour: int(7, 12) });
+      }
 
       events.sort((a, b) => a.hour - b.hour);
       for (const event of events) {
@@ -219,6 +276,8 @@ export function generateDemoData(now: Date = new Date()): { staff: DemoStaff[]; 
         movements.push({
           type: event.type,
           quantity: event.quantity,
+          reason: event.reason,
+          description: event.description,
           createdAt: createdAtMovement,
           createdByEmail: pick(activeStaff(createdAtMovement)).email,
         });
