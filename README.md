@@ -49,6 +49,23 @@ personas, así que evita el azul corporativo genérico.
 | Administrador | `admin@empresa.com` | `Admin123*` |
 | Usuario | `usuario@empresa.com` | `Usuario123*` |
 | Usuario | `usuario2@empresa.com` | `Usuario123*` |
+| Administrador | `paula.henao@empresa.com` | `Admin123*` |
+| Usuario | `diego.cardenas@empresa.com` | `Usuario123*` |
+
+### Datos de demostración
+
+La base de producción simula una empresa mediana que adoptó Balance hace seis meses
+(`prisma/demo-data.ts`):
+
+- **60 empleados** con perfiles de operaciones, contabilidad, comercial y administrativo; 12 de ellos
+  ingresaron durante el periodo.
+- **~1.500 movimientos** con sentido de negocio: horas extra entre semana, más en los cierres de mes
+  para contabilidad y comercial; turnos de sábado y festivos trabajados en operaciones (registrados
+  el siguiente día hábil), y salidas por permisos, citas médicas y días compensatorios.
+- Se registran solo en días hábiles (respetando los festivos de Colombia de 2026) y en horario de
+  oficina, por personas del equipo de RR. HH. que ya tenían usuario en esa fecha.
+- Siempre se cumple que ningún saldo queda negativo y que el saldo de cada empleado es la suma de sus
+  movimientos (lo verifica `tests/demo-data.test.ts`).
 
 ## Cómo se adaptó el enunciado
 
@@ -177,7 +194,7 @@ npm run dev
 | `npm run build` | Genera el cliente de Prisma y compila para producción |
 | `npm test` | Pruebas unitarias |
 | `npm run lint` | Revisión de estilo con ESLint |
-| `npm run db:seed` | Carga usuarios, empleados y movimientos de prueba |
+| `npm run db:seed` | Carga la empresa de demostración (**reemplaza todos los empleados y movimientos**) |
 
 ## Despliegue (Supabase + Vercel)
 
