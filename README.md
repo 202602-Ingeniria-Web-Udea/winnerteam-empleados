@@ -12,11 +12,9 @@ Proyecto del curso **Ingeniería Web** (Universidad de Antioquia, 2026-2).
 
 ## Integrantes · Winner Team
 
-| Nombre | Correo |
-|---|---|
-| _(pendiente)_ | |
-| _(pendiente)_ | |
-| _(pendiente)_ | |
+- Juan Esteban Mosquera Perea
+- Maria Paula Mosquera Alvarez
+- Mateo Reyes Uribe
 
 ## Usuarios de prueba
 
