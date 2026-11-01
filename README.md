@@ -1,6 +1,8 @@
-# Sistema de Gestión de Empleados · Banco de horas
+# Balance · Banco de horas
 
-Aplicación web de administración de recursos humanos para registrar las **horas trabajadas** de los
+**Sistema de Gestión de Empleados.**
+
+**Balance** es una aplicación web de administración de recursos humanos para registrar las **horas trabajadas** de los
 empleados de una empresa. Cada empleado tiene un *banco de horas*: las jornadas y horas extra suman
 a su saldo y las ausencias o permisos lo descuentan. El sistema muestra el historial de movimientos,
 una gráfica con la evolución diaria del saldo y un panel con indicadores generales.
@@ -15,6 +17,30 @@ Proyecto del curso **Ingeniería Web** (Universidad de Antioquia, 2026-2).
 - Juan Esteban Mosquera Perea
 - Maria Paula Mosquera Alvarez
 - Mateo Reyes Uribe
+
+## Identidad visual
+
+Balance tiene una identidad propia, **cálida y humana**: el banco de horas trata del tiempo de las
+personas, así que evita el azul corporativo genérico.
+
+- **Logo:** monograma "b" de *Balance* cuya panza es un reloj, con un punto mostaza como sol
+  (`components/brand/logo.tsx`, favicon en `app/icon.svg`).
+- **Paleta "Bosque y arcilla":**
+
+  | Color | Hex | Uso |
+  |---|---|---|
+  | Bosque | `#2F5D50` | Color principal, botones, gráfica |
+  | Bosque profundo | `#22392F` | Sidebar y bandas oscuras |
+  | Arcilla | `#D9784F` | Acento, ítem activo del menú |
+  | Mostaza | `#E9C46A` | Alertas de saldo bajo |
+  | Arena | `#F7F3EC` | Fondo |
+
+  Los colores viven como variables CSS en `app/globals.css`, y una prueba automática
+  (`tests/contrast.test.ts`) verifica que los textos cumplan el contraste WCAG AA.
+- **Tipografía:** [Fraunces](https://fonts.google.com/specimen/Fraunces) en títulos y cifras,
+  [Instrument Sans](https://fonts.google.com/specimen/Instrument+Sans) en la interfaz.
+- **Fotografías:** de [Unsplash](https://unsplash.com) (licencia Unsplash), con un tratamiento
+  cálido para integrarlas a la paleta.
 
 ## Usuarios de prueba
 
