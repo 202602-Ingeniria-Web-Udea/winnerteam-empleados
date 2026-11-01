@@ -6,6 +6,7 @@ import {
   INSUFFICIENT_HOURS_ERROR,
   SELF_DEMOTION_ERROR,
   signedQuantity,
+  startOfBusinessDay,
 } from '@/lib/balance';
 
 describe('signedQuantity', () => {
@@ -68,5 +69,16 @@ describe('canChangeRole', () => {
 
   it('permite cambiar el rol de otro usuario', () => {
     expect(canChangeRole('a', 'b', 'USER')).toEqual({ ok: true });
+  });
+});
+
+describe('startOfBusinessDay', () => {
+  it('devuelve la medianoche de Bogotá (05:00 UTC) del mismo día', () => {
+    expect(startOfBusinessDay(new Date('2026-11-01T15:00:00Z')).toISOString()).toBe('2026-11-01T05:00:00.000Z');
+  });
+
+  it('a las 22:00 de Bogotá todavía es el día anterior en UTC−5', () => {
+    // 2026-11-01T03:00Z = 2026-10-31 22:00 en Bogotá
+    expect(startOfBusinessDay(new Date('2026-11-01T03:00:00Z')).toISOString()).toBe('2026-10-31T05:00:00.000Z');
   });
 });

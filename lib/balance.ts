@@ -74,3 +74,13 @@ export function canChangeRole(
   if (actorId === targetId && newRole !== 'ADMIN') return { ok: false, error: SELF_DEMOTION_ERROR };
   return { ok: true };
 }
+
+// Colombia no tiene horario de verano: Bogotá está siempre en UTC−5.
+const BUSINESS_UTC_OFFSET_HOURS = -5;
+
+/** Instante (UTC) en que empezó "hoy" en Bogotá; sirve para contar los movimientos del día. */
+export function startOfBusinessDay(now: Date = new Date()): Date {
+  const local = new Date(now.getTime() + BUSINESS_UTC_OFFSET_HOURS * 3_600_000);
+  local.setUTCHours(0, 0, 0, 0);
+  return new Date(local.getTime() - BUSINESS_UTC_OFFSET_HOURS * 3_600_000);
+}
