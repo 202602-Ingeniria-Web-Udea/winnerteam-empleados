@@ -55,6 +55,26 @@ export const movementSchema = z
     path: ['reason'],
   });
 
+// Solicitud "Hablar con ventas" de la landing (formulario público).
+export const TEAM_SIZES = ['1-25', '26-100', '101-500', '500+'] as const;
+export const PLANS = ['ESENCIAL', 'PROFESIONAL', 'EMPRESARIAL'] as const;
+
+export const contactSchema = z.object(
+  {
+    name: z.string().trim().min(2, 'Escribe tu nombre (mínimo 2 caracteres)').max(80, 'El nombre es demasiado largo'),
+    company: z.string().trim().min(1, 'Escribe el nombre de tu empresa').max(120, 'El nombre de la empresa es demasiado largo'),
+    email: z.email('Ingresa un correo electrónico válido'),
+    teamSize: z.enum(TEAM_SIZES, 'Selecciona el tamaño de tu equipo'),
+    plan: z.enum(PLANS, 'Selecciona un plan'),
+    message: z.string().trim().max(500, 'El mensaje debe tener como máximo 500 caracteres').optional(),
+    // Campo trampa invisible para personas: si llega con contenido, lo envió un bot.
+    website: z.string().max(0, 'No pudimos procesar la solicitud').optional(),
+  },
+  INVALID_BODY
+);
+
+export type ContactInput = z.infer<typeof contactSchema>;
+
 export const roleSchema = z.object({
   role: z.enum(['ADMIN', 'USER'], 'Selecciona un rol válido'),
 }, INVALID_BODY);

@@ -95,3 +95,15 @@ model HourMovement {
 
   @@index([employeeId, createdAt])
 }
+
+// Solicitudes "Hablar con ventas" enviadas desde la landing.
+model ContactRequest {
+  id        String   @id @default(cuid())
+  name      String
+  company   String
+  email     String
+  teamSize  String
+  plan      String
+  message   String?
+  createdAt DateTime @default(now())
+}

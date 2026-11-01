@@ -8,6 +8,9 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Logo } from '@/components/brand/logo';
+import { PricingSection } from '@/components/landing/pricing-section';
+import { ProblemSection } from '@/components/landing/problem-section';
+import { WhatGoesSection } from '@/components/landing/what-goes-section';
 import { Button } from '@/components/ui/button';
 import { getCurrentUser } from '@/lib/session';
 import heroImage from '@/public/images/equipo-hero.jpg';
@@ -67,8 +70,11 @@ export default async function LandingPage() {
           <a href='#como-funciona' className='hidden text-muted-foreground hover:text-foreground md:inline'>
             Cómo funciona
           </a>
-          <a href='#funcionalidades' className='hidden text-muted-foreground hover:text-foreground md:inline'>
-            Funcionalidades
+          <a href='#que-registra' className='hidden text-muted-foreground hover:text-foreground lg:inline'>
+            Qué registra
+          </a>
+          <a href='#planes' className='hidden text-muted-foreground hover:text-foreground md:inline'>
+            Planes
           </a>
           <Button variant='outline' nativeButton={false} render={<Link href={cta.href} />}>
             {cta.label}
@@ -155,14 +161,17 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        <ProblemSection />
+        <WhatGoesSection />
+
         {/* Cómo funciona */}
-        <section id='como-funciona' className='border-y bg-card py-20'>
+        <section id='como-funciona' className='py-20'>
           <div className='mx-auto w-full max-w-6xl px-4 sm:px-6'>
             <h2 className='font-heading text-3xl font-semibold tracking-tight sm:text-4xl'>Cómo funciona</h2>
             <p className='mt-2 max-w-xl text-muted-foreground'>Tres pasos para tener el banco de horas en orden.</p>
             <ol className='mt-10 grid gap-6 md:grid-cols-3'>
               {steps.map((step, index) => (
-                <li key={step.title} className='rounded-2xl bg-background p-6'>
+                <li key={step.title} className='rounded-2xl border bg-card p-6'>
                   <span className='font-heading text-5xl font-semibold text-clay-strong'>{index + 1}</span>
                   <h3 className='mt-3 text-lg font-semibold'>{step.title}</h3>
                   <p className='mt-1 text-sm text-muted-foreground'>{step.text}</p>
@@ -173,7 +182,8 @@ export default async function LandingPage() {
         </section>
 
         {/* Funcionalidades */}
-        <section id='funcionalidades' className='mx-auto w-full max-w-6xl px-4 py-20 sm:px-6'>
+        <section id='funcionalidades' className='border-y bg-card'>
+          <div className='mx-auto w-full max-w-6xl px-4 py-20 sm:px-6'>
           <h2 className='font-heading text-3xl font-semibold tracking-tight sm:text-4xl'>Todo lo que necesitas</h2>
           <div className='mt-10 grid gap-6 md:grid-cols-3'>
             {features.map(({ icon: Icon, tone, title, text }) => (
@@ -186,7 +196,10 @@ export default async function LandingPage() {
               </article>
             ))}
           </div>
+          </div>
         </section>
+
+        <PricingSection cta={cta} />
 
         {/* Llamado a la acción */}
         <section className='px-4 pb-20 sm:px-6'>

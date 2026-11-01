@@ -107,3 +107,33 @@
     @apply font-sans;
   }
 }
+/* Animación "El problema" de la landing: 3 escenas de 5 s en bucle (15 s). */
+@keyframes story-scene {
+  0% { opacity: 0; transform: translateY(10px); }
+  4%, 30% { opacity: 1; transform: none; }
+  33.33%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes story-dot {
+  0%, 33.32% { background-color: var(--color-clay); width: 1.5rem; }
+  33.33%, 100% { background-color: rgb(247 243 236 / 0.35); width: 0.5rem; }
+}
+@keyframes story-shake {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg) translateY(-2px); }
+}
+.story-scene { opacity: 0; animation: story-scene 15s infinite both; }
+.story-dot { animation: story-dot 15s infinite both; }
+/* Los retrasos van después: el atajo "animation" de arriba los reiniciaría.
+   Los puntos usan retrasos negativos para empezar ya en su fase (sin quedar
+   "activos" mientras esperan). */
+.story-scene-2 { animation-delay: 5s; }
+.story-scene-3 { animation-delay: 10s; }
+.story-dot-2 { animation-delay: -10s; }
+.story-dot-3 { animation-delay: -5s; }
+.story-shake { animation: story-shake 0.6s ease-in-out infinite; }
+
+/* Quien prefiere menos movimiento ve directamente la escena final, sin animar. */
+@media (prefers-reduced-motion: reduce) {
+  .story-scene, .story-dot, .story-shake { animation: none; }
+  .story-scene-3 { opacity: 1; }
+}

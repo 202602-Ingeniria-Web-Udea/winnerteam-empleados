@@ -82,7 +82,13 @@ salida. En este sistema:
 
 ## Funcionalidades
 
-- **Landing** pública con botón para iniciar sesión (o ir al panel si ya hay sesión).
+- **Landing** pública con botón para iniciar sesión (o ir al panel si ya hay sesión), que además:
+  - cuenta **el problema** con una animación de tres escenas (CSS, respeta "reducir movimiento");
+  - explica **qué registra Balance** y qué no: la jornada normal va en el control de asistencia o
+    nómina; en Balance solo va el banco de horas (lo que sale de la jornada), con un ejemplo semanal;
+  - muestra **planes** (Esencial, Profesional, Empresarial). Lo que la app aún no hace está marcado
+    como «Próximamente» y los precios son ilustrativos;
+  - tiene un formulario **"Hablar con ventas"** que guarda la solicitud en la tabla `ContactRequest`.
 - **Autenticación** con correo y contraseña: contraseñas con hash bcrypt y sesión en una cookie
   `httpOnly` con un JWT firmado (válida por 3 días). Cierre de sesión desde el menú del usuario.
 - **Sidebar fijo** con la foto, el nombre y el correo del usuario, y enlaces según su rol.
@@ -159,6 +165,13 @@ tests/                     Pruebas unitarias (Vitest)
 - **RLS activado en Supabase.** Las tablas tienen *Row Level Security* sin políticas, así la Data
   API pública de Supabase no puede leerlas (por ejemplo, los hashes de contraseña). La aplicación
   no se ve afectada porque Prisma se conecta como dueño de las tablas.
+
+### Video opcional de la sección "El problema"
+
+Para mostrar un clip (por ejemplo, generado con IA) junto a la animación, guárdalo en
+`public/videos/problema.mp4` y cambia `PROBLEM_VIDEO_SRC` en
+`components/landing/problem-section.tsx` a `'/videos/problema.mp4'`. Si es `null`, solo se ve la
+animación.
 
 ## Ejecución local
 
