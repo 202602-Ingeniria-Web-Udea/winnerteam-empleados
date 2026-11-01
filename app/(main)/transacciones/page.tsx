@@ -71,7 +71,7 @@ export default async function TransaccionesPage({
       <div className='grid gap-4 lg:grid-cols-[minmax(0,1fr)_16rem]'>
         <Card className='min-w-0'>
           <CardHeader>
-            <CardTitle>Evolución del saldo diario</CardTitle>
+            <CardTitle className='font-heading text-xl'>Evolución del saldo diario</CardTitle>
             <CardDescription>Horas acumuladas de {selected.name} al cierre de cada día.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -81,7 +81,7 @@ export default async function TransaccionesPage({
         <Card>
           <CardHeader>
             <CardDescription>Saldo actual</CardDescription>
-            <CardTitle className='text-4xl tabular-nums'>{formatHours(selected.balance)}</CardTitle>
+            <CardTitle className='font-heading text-5xl font-semibold tabular-nums text-primary'>{formatHours(selected.balance)}</CardTitle>
           </CardHeader>
           <CardContent className='text-sm text-muted-foreground'>
             {movements.length} {movements.length === 1 ? 'movimiento registrado' : 'movimientos registrados'}

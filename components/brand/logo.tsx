@@ -39,7 +39,8 @@ export function Logo({
   return (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
       <LogoMark variant={variant} />
-      <span className='grid leading-none'>
+      {/* En el sidebar colapsado a íconos solo queda el monograma. */}
+      <span className='grid leading-none group-data-[collapsible=icon]:hidden'>
         <span className='font-heading text-xl font-semibold tracking-tight'>Balance</span>
         {showTagline && (
           <span

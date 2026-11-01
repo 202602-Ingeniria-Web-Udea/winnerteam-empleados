@@ -34,10 +34,13 @@ describe('paleta Balance', () => {
     ['foreground', 'background', 4.5],
     ['muted-foreground', 'background', 4.5],
     ['muted-foreground', 'card', 4.5],
+    ['muted-foreground', 'muted', 4.5], // encabezados de tabla
     ['primary-foreground', 'primary', 4.5],
     ['secondary-foreground', 'secondary', 4.5],
     ['destructive', '#F7DFD3', 4.5],
     ['sidebar-foreground', 'sidebar', 4.5],
+    // Badge "Saldo bajo": texto sobre mostaza al 30 % encima de blanco (#F8EDD2).
+    ['#6B4E0E', '#F8EDD2', 4.5],
     // Ítem activo del sidebar: texto de 14 px en negrita (texto grande para WCAG).
     ['sidebar-primary-foreground', 'sidebar-primary', 3],
   ])('%s sobre %s cumple contraste ≥ %s', (text, background, min) => {

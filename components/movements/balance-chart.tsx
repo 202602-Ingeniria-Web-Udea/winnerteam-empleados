@@ -4,7 +4,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 const chartConfig = {
-  balance: { label: 'Saldo', color: 'var(--chart-2)' },
+  balance: { label: 'Saldo', color: 'var(--chart-1)' },
 } satisfies ChartConfig;
 
 // Las fechas llegan como 'YYYY-MM-DD' (día de Bogotá). Se interpretan a mediodía

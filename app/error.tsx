@@ -1,6 +1,7 @@
 'use client'; // Los error boundaries deben ser Client Components
 
 import { useEffect } from 'react';
+import { LogoMark } from '@/components/brand/logo';
 import { Button } from '@/components/ui/button';
 
 // Se muestra si una página falla en el servidor (p. ej. la base de datos no
@@ -18,8 +19,9 @@ export default function ErrorPage({
 
   return (
     <div className='flex min-h-svh flex-col items-center justify-center gap-4 p-6 text-center'>
-      <p className='text-sm font-medium text-muted-foreground'>Algo salió mal</p>
-      <h1 className='text-3xl font-bold'>No pudimos cargar esta página</h1>
+      <LogoMark className='mb-2 size-12' />
+      <p className='text-sm font-semibold tracking-wide text-destructive uppercase'>Algo salió mal</p>
+      <h1 className='font-heading text-4xl font-semibold tracking-tight'>No pudimos cargar esta página</h1>
       <p className='max-w-sm text-muted-foreground'>
         Ocurrió un error inesperado. Intenta de nuevo en unos segundos.
       </p>

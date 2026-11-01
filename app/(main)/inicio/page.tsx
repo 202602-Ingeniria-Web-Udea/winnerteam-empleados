@@ -1,12 +1,14 @@
 import {
   IconAlertTriangle,
   IconArrowsExchange,
+  IconCircleCheck,
   IconClockHour4,
   IconUsersGroup,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { RecentMovements } from '@/components/dashboard/recent-movements';
 import { StatCard } from '@/components/dashboard/stat-card';
+import { EmptyState } from '@/components/empty-state';
 import { LOW_BALANCE_HOURS } from '@/components/employees/employees-table';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -44,31 +46,33 @@ export default async function InicioPage() {
       <PageHeader title={`Hola, ${user.name}`} description='Este es el resumen del banco de horas de hoy.' />
 
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-        <StatCard title='Empleados' value={String(employeeCount)} icon={<IconUsersGroup />} />
+        <StatCard title='Empleados' value={String(employeeCount)} icon={<IconUsersGroup />} tone='forest' />
         <StatCard
           title='Horas acumuladas'
           value={formatHours(totals._sum.balance ?? 0)}
           description='Suma de los saldos de todos los empleados'
           icon={<IconClockHour4 />}
+          tone='sage'
         />
-        <StatCard title='Movimientos de hoy' value={String(todayCount)} icon={<IconArrowsExchange />} />
+        <StatCard title='Movimientos de hoy' value={String(todayCount)} icon={<IconArrowsExchange />} tone='clay' />
         <StatCard
           title={`Saldo bajo (< ${LOW_BALANCE_HOURS} h)`}
           value={String(lowBalance.length)}
           description='Empleados con pocas horas a favor'
           icon={<IconAlertTriangle />}
+          tone='mustard'
         />
       </div>
 
       <div className='grid gap-4 lg:grid-cols-2'>
         <Card>
           <CardHeader>
-            <CardTitle>Empleados con saldo bajo</CardTitle>
+            <CardTitle className='font-heading text-xl'>Empleados con saldo bajo</CardTitle>
             <CardDescription>Tienen menos de {LOW_BALANCE_HOURS} horas acumuladas.</CardDescription>
           </CardHeader>
           <CardContent>
             {lowBalance.length === 0 ? (
-              <p className='text-sm text-muted-foreground'>Ningún empleado tiene saldo bajo.</p>
+              <EmptyState icon={<IconCircleCheck />}>Ningún empleado tiene saldo bajo.</EmptyState>
             ) : (
               <ul className='divide-y'>
                 {lowBalance.map((employee) => (
@@ -79,7 +83,7 @@ export default async function InicioPage() {
                     >
                       {employee.name}
                     </Link>
-                    <span className='font-medium tabular-nums text-destructive'>
+                    <span className='rounded-full bg-mustard/30 px-2 py-0.5 text-sm font-semibold tabular-nums text-[#6B4E0E]'>
                       {formatHours(employee.balance)}
                     </span>
                   </li>
@@ -90,7 +94,7 @@ export default async function InicioPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Últimos movimientos</CardTitle>
+            <CardTitle className='font-heading text-xl'>Últimos movimientos</CardTitle>
             <CardDescription>Los cinco registros más recientes.</CardDescription>
           </CardHeader>
           <CardContent>

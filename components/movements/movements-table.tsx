@@ -1,4 +1,6 @@
-import { Badge } from '@/components/ui/badge';
+import { IconArrowsExchange } from '@tabler/icons-react';
+import { EmptyState } from '@/components/empty-state';
+import { MovementBadge } from '@/components/movements/movement-badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { MovementType } from '@/lib/balance';
 import { formatDate, formatSignedHours, shortId } from '@/lib/format';
@@ -13,7 +15,7 @@ export type MovementRow = {
 
 export function MovementsTable({ movements }: { movements: MovementRow[] }) {
   return (
-    <div className='overflow-x-auto rounded-xl border'>
+    <div className='overflow-x-auto rounded-2xl border bg-card'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -33,12 +35,10 @@ export function MovementsTable({ movements }: { movements: MovementRow[] }) {
                 </TableCell>
                 <TableCell className='whitespace-nowrap'>{formatDate(movement.createdAt)}</TableCell>
                 <TableCell>
-                  <Badge variant={movement.type === 'ENTRADA' ? 'secondary' : 'destructive'}>
-                    {movement.type === 'ENTRADA' ? 'Entrada' : 'Salida'}
-                  </Badge>
+                  <MovementBadge type={movement.type} />
                 </TableCell>
                 <TableCell
-                  className={`text-right font-medium tabular-nums ${movement.type === 'ENTRADA' ? 'text-emerald-600 dark:text-emerald-400' : 'text-destructive'}`}
+                  className={`text-right font-medium tabular-nums ${movement.type === 'ENTRADA' ? 'text-primary' : 'text-destructive'}`}
                 >
                   {formatSignedHours(movement.type, movement.quantity)}
                 </TableCell>
@@ -52,8 +52,8 @@ export function MovementsTable({ movements }: { movements: MovementRow[] }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className='h-24 text-center text-muted-foreground'>
-                Este empleado aún no tiene movimientos.
+              <TableCell colSpan={5}>
+                <EmptyState icon={<IconArrowsExchange />}>Este empleado aún no tiene movimientos.</EmptyState>
               </TableCell>
             </TableRow>
           )}

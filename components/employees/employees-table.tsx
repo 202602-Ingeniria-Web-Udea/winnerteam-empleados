@@ -1,3 +1,5 @@
+import { IconUsersGroup } from '@tabler/icons-react';
+import { EmptyState } from '@/components/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatHours, shortId } from '@/lib/format';
@@ -15,7 +17,7 @@ export const LOW_BALANCE_HOURS = 8;
 
 export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
   return (
-    <div className='overflow-x-auto rounded-xl border'>
+    <div className='overflow-x-auto rounded-2xl border bg-card'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -35,7 +37,9 @@ export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
                 <TableCell className='font-medium'>{employee.name}</TableCell>
                 <TableCell className='text-right tabular-nums'>
                   <span className='inline-flex items-center gap-2'>
-                    {employee.balance < LOW_BALANCE_HOURS && <Badge variant='destructive'>Saldo bajo</Badge>}
+                    {employee.balance < LOW_BALANCE_HOURS && (
+                      <Badge className='bg-mustard/30 text-[#6B4E0E]'>Saldo bajo</Badge>
+                    )}
                     {formatHours(employee.balance)}
                   </span>
                 </TableCell>
@@ -49,8 +53,8 @@ export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className='h-24 text-center text-muted-foreground'>
-                Aún no hay empleados registrados.
+              <TableCell colSpan={4}>
+                <EmptyState icon={<IconUsersGroup />}>Aún no hay empleados registrados.</EmptyState>
               </TableCell>
             </TableRow>
           )}

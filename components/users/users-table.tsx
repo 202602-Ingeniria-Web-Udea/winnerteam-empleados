@@ -8,7 +8,7 @@ export type UserRow = { id: string; email: string; role: Role; createdAt: Date }
 
 export function UsersTable({ users, currentUserId }: { users: UserRow[]; currentUserId: string }) {
   return (
-    <div className='overflow-x-auto rounded-xl border'>
+    <div className='overflow-x-auto rounded-2xl border bg-card'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -31,7 +31,7 @@ export function UsersTable({ users, currentUserId }: { users: UserRow[]; current
                 {user.id === currentUserId && <span className='ml-2 text-xs text-muted-foreground'>(tú)</span>}
               </TableCell>
               <TableCell>
-                <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>
+                <Badge className={user.role === 'ADMIN' ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}>
                   {user.role === 'ADMIN' ? 'Administrador' : 'Usuario'}
                 </Badge>
               </TableCell>

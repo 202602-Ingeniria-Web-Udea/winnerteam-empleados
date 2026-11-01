@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
+import { IconArrowsExchange } from '@tabler/icons-react';
+import { EmptyState } from '@/components/empty-state';
+import { MovementBadge } from '@/components/movements/movement-badge';
 import type { MovementType } from '@/lib/balance';
 import { formatDate, formatSignedHours } from '@/lib/format';
 
@@ -14,7 +16,7 @@ export type RecentMovement = {
 
 export function RecentMovements({ movements }: { movements: RecentMovement[] }) {
   if (movements.length === 0) {
-    return <p className='text-sm text-muted-foreground'>Todavía no hay movimientos registrados.</p>;
+    return <EmptyState icon={<IconArrowsExchange />}>Todavía no hay movimientos registrados.</EmptyState>;
   }
 
   return (
@@ -33,9 +35,7 @@ export function RecentMovements({ movements }: { movements: RecentMovement[] }) 
               {[movement.createdBy.name, movement.createdBy.lastName].filter(Boolean).join(' ')}
             </p>
           </div>
-          <Badge variant={movement.type === 'ENTRADA' ? 'secondary' : 'destructive'} className='tabular-nums'>
-            {formatSignedHours(movement.type, movement.quantity)}
-          </Badge>
+          <MovementBadge type={movement.type}>{formatSignedHours(movement.type, movement.quantity)}</MovementBadge>
         </li>
       ))}
     </ul>

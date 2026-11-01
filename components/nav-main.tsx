@@ -26,6 +26,8 @@ export function NavMain({ items }: { items: NavItem[] }) {
             <SidebarMenuButton
               isActive={pathname.startsWith(item.url)}
               tooltip={item.title}
+              // Ítem activo en arcilla, el acento de la marca sobre el sidebar oscuro.
+              className='h-9 data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground data-active:hover:bg-sidebar-primary/90'
               // En móvil el sidebar es una hoja superpuesta: se cierra al navegar.
               onClick={() => setOpenMobile(false)}
               render={<Link href={item.url} />}

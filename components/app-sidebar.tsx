@@ -2,12 +2,12 @@
 
 import {
   IconArrowsExchange,
-  IconClockHour4,
   IconLayoutDashboard,
   IconUsersGroup,
   IconUserShield,
 } from '@tabler/icons-react';
 import Link from 'next/link';
+import { Logo } from '@/components/brand/logo';
 import { NavMain, type NavItem } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -40,14 +40,13 @@ export function AppSidebar({ user, ...props }: { user: CurrentUser } & React.Com
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size='lg' render={<Link href='/inicio' />}>
-              <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
-                <IconClockHour4 className='size-4' />
-              </div>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>Banco de horas</span>
-                <span className='truncate text-xs text-muted-foreground'>Gestión de empleados</span>
-              </div>
+            <SidebarMenuButton
+              size='lg'
+              // El botón del sidebar fuerza los SVG a 16 px; el logo va a 32 px salvo con el sidebar colapsado.
+              className='hover:bg-transparent active:bg-transparent [&_svg]:size-8! group-data-[collapsible=icon]:[&_svg]:size-4!'
+              render={<Link href='/inicio' aria-label='Balance, inicio' />}
+            >
+              <Logo variant='dark' />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
