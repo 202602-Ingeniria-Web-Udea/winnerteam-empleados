@@ -85,7 +85,7 @@ export default async function LandingPage() {
               Banco de horas para equipos de recursos humanos
             </span>
             <h1 className='font-heading text-5xl leading-[1.02] font-semibold tracking-tight text-balance sm:text-6xl'>
-              Cada hora de tu equipo, <em className='font-medium text-clay'>bien cuidada.</em>
+              Cada hora de tu equipo, <em className='font-medium text-clay-strong'>bien cuidada.</em>
             </h1>
             <p className='max-w-xl text-lg text-muted-foreground text-pretty'>
               Balance reúne jornadas, horas extra, ausencias y permisos en un solo lugar, para que
@@ -121,7 +121,7 @@ export default async function LandingPage() {
             <div className='relative overflow-hidden rounded-[2rem] shadow-2xl shadow-forest-deep/20'>
               <Image
                 src={heroImage}
-                alt='Equipo de trabajo revisando información en un portátil'
+                alt='Equipo de trabajo conversando alrededor de una tableta'
                 placeholder='blur'
                 priority
                 sizes='(min-width: 1024px) 50vw, 100vw'
@@ -132,7 +132,7 @@ export default async function LandingPage() {
             </div>
 
             {/* Tarjeta flotante: muestra el producto encima de la foto. */}
-            <div className='absolute -bottom-12 left-3 w-44 rounded-2xl border bg-card p-3 shadow-xl sm:-bottom-8 sm:-left-6 sm:w-60 sm:p-4'>
+            <div aria-hidden className='absolute -bottom-12 left-3 w-44 rounded-2xl border bg-card p-3 shadow-xl sm:-bottom-8 sm:-left-6 sm:w-60 sm:p-4'>
               <p className='text-xs text-muted-foreground'>Saldo de Ana Gómez</p>
               <p className='font-heading text-2xl font-semibold text-primary sm:text-3xl'>+24 h</p>
               <svg viewBox='0 0 200 60' className='mt-2 w-full' aria-hidden='true'>
@@ -149,7 +149,7 @@ export default async function LandingPage() {
                 />
               </svg>
             </div>
-            <div className='absolute top-6 -left-3 hidden rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-primary shadow-lg sm:block'>
+            <div aria-hidden className='absolute top-6 -left-3 hidden rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-primary shadow-lg sm:block'>
               Entrada · +8 h
             </div>
           </div>
@@ -163,7 +163,7 @@ export default async function LandingPage() {
             <ol className='mt-10 grid gap-6 md:grid-cols-3'>
               {steps.map((step, index) => (
                 <li key={step.title} className='rounded-2xl bg-background p-6'>
-                  <span className='font-heading text-5xl font-semibold text-clay'>{index + 1}</span>
+                  <span className='font-heading text-5xl font-semibold text-clay-strong'>{index + 1}</span>
                   <h3 className='mt-3 text-lg font-semibold'>{step.title}</h3>
                   <p className='mt-1 text-sm text-muted-foreground'>{step.text}</p>
                 </li>
@@ -196,7 +196,7 @@ export default async function LandingPage() {
             </h2>
             <Button
               size='lg'
-              className='h-11 bg-clay px-5 text-white hover:bg-clay/90'
+              className='h-11 bg-clay-strong px-5 text-white hover:bg-clay-strong/90'
               nativeButton={false}
               render={<Link href={cta.href} />}
             >

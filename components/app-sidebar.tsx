@@ -42,8 +42,8 @@ export function AppSidebar({ user, ...props }: { user: CurrentUser } & React.Com
           <SidebarMenuItem>
             <SidebarMenuButton
               size='lg'
-              // El botón del sidebar fuerza los SVG a 16 px; el logo va a 32 px salvo con el sidebar colapsado.
-              className='hover:bg-transparent active:bg-transparent [&_svg]:size-8! group-data-[collapsible=icon]:[&_svg]:size-4!'
+              // El botón del sidebar fuerza los SVG a 16 px; el logo ocupa sus 32 px, también colapsado.
+              className='hover:bg-transparent active:bg-transparent [&_svg]:size-8!'
               render={<Link href='/inicio' aria-label='Balance, inicio' />}
             >
               <Logo variant='dark' />

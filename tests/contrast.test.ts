@@ -24,6 +24,14 @@ function ratio(a: string, b: string): number {
 }
 
 describe('paleta Balance', () => {
+  it('mantiene la variante dark ligada a la clase .dark (no al modo oscuro del sistema)', () => {
+    expect(css).toMatch(/@custom-variant dark \(&:is\(\.dark \*\)\);/);
+  });
+
+  it('no referencia fuentes que ya no se cargan', () => {
+    expect(css).not.toMatch(/--font-geist-mono/);
+  });
+
   it('define los tokens principales en hexadecimal', () => {
     for (const name of ['background', 'foreground', 'primary', 'sidebar', 'destructive']) {
       expect(tokens[name], name).toMatch(/^#[0-9A-Fa-f]{6}$/);
@@ -41,8 +49,13 @@ describe('paleta Balance', () => {
     ['sidebar-foreground', 'sidebar', 4.5],
     // Badge "Saldo bajo": texto sobre mostaza al 30 % encima de blanco (#F8EDD2).
     ['#6B4E0E', '#F8EDD2', 4.5],
-    // Ítem activo del sidebar: texto de 14 px en negrita (texto grande para WCAG).
-    ['sidebar-primary-foreground', 'sidebar-primary', 3],
+    // Ítem activo del sidebar y botón arcilla de la landing: texto de 14 px, no es "texto grande".
+    ['sidebar-primary-foreground', 'sidebar-primary', 4.5],
+    ['#FFFFFF', 'clay-strong', 4.5],
+    // Arcilla como texto grande (titular del hero, números de pasos): mínimo 3:1.
+    ['clay-strong', 'background', 3],
+    // Correo del usuario en el pie del sidebar: sidebar-foreground al 70 % (#ADB8B1).
+    ['#ADB8B1', 'sidebar', 4.5],
   ])('%s sobre %s cumple contraste ≥ %s', (text, background, min) => {
     expect(ratio(color(text), color(background))).toBeGreaterThanOrEqual(min);
   });

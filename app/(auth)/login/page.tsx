@@ -19,6 +19,8 @@ export default function LoginPage() {
           className='object-cover opacity-80 sepia-[.2] saturate-[.9]'
         />
         <div className='absolute inset-0 bg-gradient-to-t from-forest-deep via-forest-deep/40 to-forest-deep/10' />
+        {/* Sombra superior para que el logo y su subtítulo se lean sobre la foto. */}
+        <div className='absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-forest-deep/70 to-transparent' />
         <div className='relative flex h-full flex-col justify-between p-10 text-sand'>
           <Logo variant='dark' />
           <blockquote className='max-w-md space-y-3'>
