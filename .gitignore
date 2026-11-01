@@ -49,3 +49,6 @@ next-env.d.ts
 
 # enunciado del proyecto (no se versiona)
 /Proyecto 2.pdf
+
+# archivos temporales de la CLI de Supabase
+/supabase/.temp/
