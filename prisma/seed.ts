@@ -2,6 +2,7 @@
 // Es idempotente: los usuarios se hacen upsert por correo y los empleados demo
 // se borran y recrean en cada ejecución.
 import bcrypt from 'bcryptjs';
+import { normalizeSearch } from '../lib/list-params';
 import { prisma } from '../lib/prisma';
 
 const users = [
@@ -78,6 +79,7 @@ async function main() {
     await prisma.employee.create({
       data: {
         name,
+        nameSearch: normalizeSearch(name),
         balance,
         createdById: admin.id,
         createdAt: movements[0].createdAt,

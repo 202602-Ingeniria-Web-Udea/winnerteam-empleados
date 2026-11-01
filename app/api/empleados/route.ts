@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { normalizeSearch } from '@/lib/list-params';
 import { prisma } from '@/lib/prisma';
 import { apiAdmin } from '@/lib/session';
 import { employeeSchema, firstIssue } from '@/lib/validation';
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // el historial y la gráfica de saldos diarios partan del valor correcto.
     const employee = await prisma.$transaction(async (tx) => {
       const created = await tx.employee.create({
-        data: { name, balance: initialBalance, createdById: user.id },
+        data: { name, nameSearch: normalizeSearch(name), balance: initialBalance, createdById: user.id },
       });
       if (initialBalance > 0) {
         await tx.hourMovement.create({

@@ -1,4 +1,6 @@
-import { IconUsersGroup } from '@tabler/icons-react';
+import { IconArrowRight, IconUsersGroup } from '@tabler/icons-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -15,7 +17,7 @@ export type EmployeeRow = {
 // Umbral de "saldo bajo", compartido con el dashboard.
 export const LOW_BALANCE_HOURS = 8;
 
-export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
+export function EmployeesTable({ employees, emptyMessage }: { employees: EmployeeRow[]; emptyMessage?: string }) {
   return (
     <div className='overflow-x-auto rounded-2xl border bg-card'>
       <Table>
@@ -25,6 +27,7 @@ export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
             <TableHead>Nombre</TableHead>
             <TableHead className='text-right'>Saldo</TableHead>
             <TableHead>Creado por</TableHead>
+            <TableHead className='text-right'>Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -49,12 +52,23 @@ export function EmployeesTable({ employees }: { employees: EmployeeRow[] }) {
                     <p className='text-xs text-muted-foreground'>{employee.createdBy.email}</p>
                   </div>
                 </TableCell>
+                <TableCell className='text-right'>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    nativeButton={false}
+                    render={<Link href={`/transacciones?empleado=${employee.id}`} />}
+                  >
+                    Ver movimientos
+                    <IconArrowRight />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4}>
-                <EmptyState icon={<IconUsersGroup />}>Aún no hay empleados registrados.</EmptyState>
+              <TableCell colSpan={5}>
+                <EmptyState icon={<IconUsersGroup />}>{emptyMessage ?? 'Aún no hay empleados registrados.'}</EmptyState>
               </TableCell>
             </TableRow>
           )}

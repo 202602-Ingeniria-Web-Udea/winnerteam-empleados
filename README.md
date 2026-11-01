@@ -69,13 +69,15 @@ salida. En este sistema:
 - **Autenticación** con correo y contraseña: contraseñas con hash bcrypt y sesión en una cookie
   `httpOnly` con un JWT firmado (válida por 3 días). Cierre de sesión desde el menú del usuario.
 - **Sidebar fijo** con la foto, el nombre y el correo del usuario, y enlaces según su rol.
-- **Inicio (dashboard):** total de empleados, horas acumuladas, movimientos de hoy, empleados con
-  saldo bajo (menos de 8 h) y últimos movimientos.
-- **Transacciones:** selector de empleado, tabla de movimientos (id, fecha, tipo, horas y
-  responsable), diálogo para agregar un movimiento y gráfica de la evolución del saldo diario.
-  Una salida mayor que el saldo disponible se rechaza.
-- **Maestros:** tabla de empleados (id, nombre, saldo y quién lo creó) y diálogo para agregar un
-  empleado con su saldo inicial.
+- **Inicio (dashboard):** total de empleados, horas acumuladas, movimientos de hoy, los 5 empleados
+  con saldo más bajo (menos de 8 h, con enlace a la lista completa) y últimos movimientos.
+- **Transacciones:** selector de empleado **con búsqueda**, tabla de movimientos paginada (id,
+  fecha, tipo, horas y responsable), diálogo para agregar un movimiento y gráfica de la evolución
+  del saldo diario con rango de 30 días, 90 días o todo. Una salida mayor que el saldo disponible se
+  rechaza.
+- **Maestros:** tabla de empleados (id, nombre, saldo y quién lo creó) con **buscador**, orden por
+  nombre o saldo, filtro "Solo saldo bajo", paginación de 20 en 20 y enlace a los movimientos de
+  cada empleado; diálogo para agregar un empleado con su saldo inicial.
 - **Usuarios:** tabla de usuarios (id, fecha de creación, correo y rol) y diálogo para cambiar el rol.
 
 ### Roles y permisos
@@ -127,6 +129,10 @@ tests/                     Pruebas unitarias (Vitest)
   inicial, para que el historial y la gráfica partan del valor correcto.
 - **Zona horaria de Bogotá.** Los días de la gráfica y los "movimientos de hoy" se calculan en
   hora de Colombia, sin importar dónde corra el servidor.
+- **Pensado para cientos de empleados.** Probado con 500 empleados y más de 20.000 movimientos:
+  la búsqueda, la paginación y los filtros se resuelven en la base de datos, y la URL guarda el
+  estado (se puede compartir un enlace a una búsqueda). La búsqueda ignora tildes y mayúsculas
+  ("rios" encuentra a "Ríos") gracias a una columna con el nombre normalizado.
 - **Un administrador no puede quitarse su propio rol**, para que el sistema no se quede sin
   administradores por accidente.
 - **RLS activado en Supabase.** Las tablas tienen *Row Level Security* sin políticas, así la Data

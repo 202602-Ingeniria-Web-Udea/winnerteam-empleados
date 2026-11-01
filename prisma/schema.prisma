@@ -54,6 +54,8 @@ model Profile {
 model Employee {
   id          String         @id @default(cuid())
   name        String
+  // Nombre en minúsculas y sin tildes (normalizeSearch) para buscar "rios" y encontrar "Ríos".
+  nameSearch  String         @default("")
   // Saldo en horas. Es una caché de la suma de movimientos y se actualiza
   // en la misma transacción que crea cada movimiento.
   balance     Int            @default(0)
